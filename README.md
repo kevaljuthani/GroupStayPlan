@@ -12,7 +12,7 @@ For an eventual SaaS use case with multi-user groups, role-based access, chat re
 - Group name and AI-friendly description at top.
 - Admin panel with env-based login credentials.
 - Add, edit, delete stay records.
-- Bulk import from structured WhatsApp chat export snippets.
+- Bulk import from WhatsApp exported `.zip`/`.txt` files with local Ollama-based AI extraction and categorization.
 - Store: name, address, map link, rating, price, food inclusion, images, recommender, contact details, notes.
 
 ## Quick start
@@ -45,11 +45,30 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+### Ollama setup for intelligent extraction
+
+Run Ollama locally and pull a model:
+
+```bash
+ollama pull llama3.1
+ollama serve
+```
+
+Optional environment variables:
+
+- `OLLAMA_URL` (default: `http://127.0.0.1:11434`)
+- `OLLAMA_MODEL` (default: `llama3.1`)
+
+The importer first tries AI extraction, then falls back to the structured parser if AI is unavailable.
+
+
 Admin login is at `http://localhost:3000/admin/login`.
 
-## WhatsApp import format
+## WhatsApp import
 
-Paste blocks separated by `---` in admin panel import box:
+In admin panel, upload WhatsApp export `.zip` (containing `.txt`) or `.txt` directly.
+
+You can also paste structured blocks separated by `---` as fallback:
 
 ```txt
 Name: Green Valley Resort

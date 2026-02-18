@@ -71,17 +71,15 @@ export function AdminDashboard({ group }: { group: GroupPayload }) {
   }
 
   async function importChat(formData: FormData) {
+    formData.set('groupId', group.id);
+
     const response = await fetch('/api/chat-import', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        groupId: group.id,
-        chatText: String(formData.get('chatText') ?? '')
-      })
+      body: formData
     });
 
     if (!response.ok) {
-      alert('Import failed. Ensure your chat text has structured entries.');
+      alert('Import failed. Upload a WhatsApp .zip/.txt export or provide chat text.');
       return;
     }
 
@@ -93,11 +91,17 @@ export function AdminDashboard({ group }: { group: GroupPayload }) {
       <section className="panel">
         <h2>Bulk import WhatsApp chat export</h2>
         <p className="small">
-          Split entries with <code>---</code> and use keys like Name, Address, Rating, Price, Food,
-          Images, Recommended By.
+          Upload exported WhatsApp <code>.zip</code>/<code>.txt</code> files. We use a local Ollama model to intelligently extract stays and categories, then save them to the database. You can still paste structured entries as fallback.
         </p>
         <form action={importChat}>
-          <textarea name="chatText" required placeholder="Paste parsed chat snippets here..." />
+          <label>
+            Upload WhatsApp export (.zip or .txt)
+            <input type="file" name="chatFile" accept=".zip,.txt,text/plain,application/zip" />
+          </label>
+          <label>
+            Optional: paste chat text directly
+            <textarea name="chatText" placeholder="Paste parsed chat snippets or raw WhatsApp chat here..." />
+          </label>
           <button className="primary" type="submit">
             Import entries
           </button>
