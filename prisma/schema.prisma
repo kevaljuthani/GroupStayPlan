@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  stays       Stay[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Stay {
+  id             String   @id @default(cuid())
+  groupId        String
+  name           String
+  address        String
+  mapsLink       String?
+  rating         Float?
+  pricePerNight  Int?
+  foodIncluded   Boolean  @default(false)
+  images         String[]
+  recommendedBy  String[]
+  contactName    String?
+  contactPhone   String?
+  notes          String?
+  sourceMessage  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+}
